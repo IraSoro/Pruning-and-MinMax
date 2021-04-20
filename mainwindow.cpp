@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     Start();
 
+    BuildTree tree;
+    tree.Building();
+
 }
 
 MainWindow::~MainWindow()
@@ -40,11 +43,6 @@ void MainWindow::Start(){
             ui->tableWidget->setItem(row, column, newItem);
             column++;
     }
-
-
-
-
-
-
+    file.close();
 
 }

@@ -2,20 +2,90 @@
 #define TREE_H
 
 #include "iostream"
+#include "QVector"
+#include "QDebug"
 
 struct Node{
-    Node(int count) {
-        this->count = count;
-        for(int i = 0; i < count; i++)
-            arrayChildren[i] = nullptr;
+    Node(){
     }
-    Node() {
-        count = 0;
-        for(int i = 0; i < count; i++)
-            arrayChildren[i] = nullptr;
+    int countChilds = 0;
+    QVector <Node*> childs ;
+    Node *parent;
+    int data = 0;
+    int id = 0;
+    int level = 0;
+
+};
+
+class Tree{
+public:
+    Tree() {
+
     }
-    int count = 0;
-    Node* arrayChildren[];
+    Node *root;
+    void AddRoot(int id, int countChilds, int data = 0){
+        //if (!root){
+            root = new Node();
+            root->data = data;
+            root->countChilds = countChilds;
+            root->id = id;
+            root->level = 0;
+        //}
+        return;
+    }
+
+    bool AddChilNode(int parentId, int id, int countChalds){
+
+        Node *tmp = FindNodeById(root, parentId);
+        //qDebug()<<"--------";
+        if(!tmp){
+            qDebug()<<"Return FALSE in AddChilNode";
+            return false;
+        }
+
+        if(FindNodeById(tmp, id)){
+            qDebug()<<"Return TRUE in AddChilNode";
+            return true;
+        }
+
+        Node *child = new Node();
+        child->id = id;
+        child->countChilds = countChalds;
+        child->level = tmp->level + 1;
+        child->parent = tmp;
+        tmp->childs.push_back(child);
+
+        return true;
+
+    }
+
+private:
+    Node* FindNodeById(Node *n, int id){
+            if(!n){
+                qDebug()<<"Error in 1_FindNodeById";
+                return nullptr;
+            }
+
+            if(n->id == id){
+                qDebug()<<"Return n in FindNodeById";
+                return n;
+            }
+
+            if(!n->childs.isEmpty()){
+                int temp = n->childs.size();
+                for(int i=0; i<temp; i++){
+                    Node *foundNode = FindNodeById(n->childs[i], id);
+                    if(foundNode){
+                        qDebug()<<"Return foundNode in FindNodeById";
+                        return foundNode;
+                    }
+                }
+            }
+            //qDebug()<<"------";
+            return nullptr;
+        }
+
+
 };
 
 

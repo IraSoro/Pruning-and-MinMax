@@ -10,6 +10,8 @@
 
 #include "iostream"
 
+#include "BuildTree.h"
+
 using namespace std;
 
 QT_BEGIN_NAMESPACE
