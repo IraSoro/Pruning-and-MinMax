@@ -8,10 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     Start();
-
-    BuildTree tree;
-    tree.Building();
-
+    BuildTree tree(arrayValNodes);
 }
 
 MainWindow::~MainWindow()
@@ -39,10 +36,10 @@ void MainWindow::Start(){
     while (!file.atEnd()) {
             QByteArray line = file.readLine();
             int num = line[0]-48;
+            arrayValNodes.push_back(num);
             QTableWidgetItem *newItem = new QTableWidgetItem(tr("%1").arg(num));
             ui->tableWidget->setItem(row, column, newItem);
             column++;
     }
     file.close();
-
 }

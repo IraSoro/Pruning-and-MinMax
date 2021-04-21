@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QVector <int> arrayValNodes;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 

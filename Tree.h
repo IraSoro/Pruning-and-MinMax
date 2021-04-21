@@ -23,21 +23,20 @@ public:
 
     }
     Node *root;
+    QVector <int> arrayDataNodes;
+    int numArrayDataNode = 0;
     void AddRoot(int id, int countChilds, int data = 0){
-        //if (!root){
-            root = new Node();
-            root->data = data;
-            root->countChilds = countChilds;
-            root->id = id;
-            root->level = 0;
-        //}
+        root = new Node();
+        root->data = data;
+        root->countChilds = countChilds;
+        root->id = id;
+        root->level = 0;
         return;
     }
 
-    bool AddChilNode(int parentId, int id, int countChalds){
+    bool AddChilNode(int parentId, int id, int countChilds, int val = 0){
 
         Node *tmp = FindNodeById(root, parentId);
-        //qDebug()<<"--------";
         if(!tmp){
             qDebug()<<"Return FALSE in AddChilNode";
             return false;
@@ -50,7 +49,8 @@ public:
 
         Node *child = new Node();
         child->id = id;
-        child->countChilds = countChalds;
+        child->data = val;
+        child->countChilds = countChilds;
         child->level = tmp->level + 1;
         child->parent = tmp;
         tmp->childs.push_back(child);
@@ -65,19 +65,42 @@ public:
         if(!n->childs.isEmpty()){
             int temp = n->childs.size();
             for(int i=0; i<temp; i++){
-                qDebug()<<"node - "<<n->id<<" child num - "<<n->childs[i]->id;
+                qDebug()<<"node - "<<n->id<<" child num - "<<n->childs[i]->id<<" count childs "<<n->childs[i]->countChilds<<" fact count childs "<<n->childs[i]->childs.size()<<" data = "<<n->childs[i]->data;
                 BypassTree(n->childs[i]);
             }
         }
-
     }
 
     void BypassTreeStart(){
         Node *tmp = GetRoot();
 
         for (int i = 0 ; i < tmp->childs.size(); i++){
-            qDebug()<<"node - "<<tmp->id<<" child num - "<<tmp->childs[i]->id;
+            qDebug()<<"node - "<<tmp->id<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data;
             BypassTree(tmp->childs[i]);
+        }
+    }
+
+    void CompleteNodes(Node *n){
+
+        if (!n->childs.size() && n->countChilds){
+            int temp = n->countChilds;
+            for(int i=0; i<temp; i++){
+                AddChilNode(n->id, 101 + numArrayDataNode, 0, arrayDataNodes[numArrayDataNode]);
+                numArrayDataNode++;
+            }
+        } else{
+            int val = n->childs.size();
+            for(int i=0; i<val; i++)
+                CompleteNodes(n->childs[i]);
+        }
+
+    }
+
+    void CompleteNodesStart(){
+        Node *tmp = GetRoot();
+
+        for (int i = 0 ; i < tmp->childs.size(); i++){
+            CompleteNodes(tmp->childs[i]);
         }
     }
 
@@ -103,7 +126,6 @@ private:
                     }
                 }
             }
-            //qDebug()<<"------";
             return nullptr;
         }
 

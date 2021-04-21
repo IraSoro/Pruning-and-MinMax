@@ -15,13 +15,12 @@ private:
     Tree tree;
 
 public:
-    BuildTree(){
-
-    }
-    void Building(){
+    BuildTree(QVector <int> arrayDataNodes){
+        tree.arrayDataNodes = arrayDataNodes;
         OpenFile();
         tree.BypassTreeStart();
     }
+
     void OpenFile(){
         QFile file("C:/Users/User/Desktop/min_max/nodes.txt");
         file.open(QIODevice::ReadOnly);
@@ -36,11 +35,7 @@ public:
                 QStringList list = line.split(QRegExp("\\s+"));
                 list.removeOne("");
                 qDebug()<<line;
-                //qDebug()<<list;
-                //qDebug()<< list[ID_PARENT].toInt();
-                //qDebug()<< list[ID].toInt();
                 if (list[ID_PARENT].toInt() < 0){
-                    //qDebug()<< list[ID_PARENT].toInt();
                     int temp = list[ID].toInt();
                     int temp2 = list[COUNT_CHILDS].toInt();
                     tree.AddRoot(temp,temp2);
@@ -52,6 +47,8 @@ public:
 
         }
         file.close();
+
+        tree.CompleteNodesStart();
 
     }
 
