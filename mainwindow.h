@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTableWidget>
+#include <QGraphicsScene>
 
 #include <QFile>
 #include <QString>
@@ -11,6 +12,7 @@
 #include "iostream"
 
 #include "BuildTree.h"
+#include "DrawingObjects.h"
 
 using namespace std;
 
@@ -29,6 +31,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene *scene;
+    QPainter *painter;
     void Start();
 };
 #endif // MAINWINDOW_H
