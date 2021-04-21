@@ -29,10 +29,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void DrawingNode();
+    void DrawingTree();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QPainter *painter;
+    QVector <DrawingObjects*> items;
     void Start();
+
 };
 #endif // MAINWINDOW_H

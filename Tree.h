@@ -5,6 +5,10 @@
 #include "QVector"
 #include "QDebug"
 
+#include <QGraphicsScene>
+
+#include "DrawingObjects.h"
+
 struct Node{
     Node(){
     }
@@ -24,13 +28,16 @@ public:
     }
     Node *root;
     QVector <int> arrayDataNodes;
+    QVector <int> CountNodesOnLevel;
     int numArrayDataNode = 0;
+
     void AddRoot(int id, int countChilds, int data = 0){
         root = new Node();
         root->data = data;
         root->countChilds = countChilds;
         root->id = id;
         root->level = 0;
+        CountNodesOnLevel.push_back(1);
         return;
     }
 
@@ -52,6 +59,11 @@ public:
         child->data = val;
         child->countChilds = countChilds;
         child->level = tmp->level + 1;
+        if (CountNodesOnLevel.size() != tmp->level + 2){
+            CountNodesOnLevel.push_back(1);
+        }else{
+            CountNodesOnLevel[tmp->level + 1]++;
+        }
         child->parent = tmp;
         tmp->childs.push_back(child);
 
@@ -78,6 +90,8 @@ public:
             qDebug()<<"node - "<<tmp->id<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data;
             BypassTree(tmp->childs[i]);
         }
+
+        GetLeveles();
     }
 
     void CompleteNodes(Node *n){
@@ -101,6 +115,13 @@ public:
 
         for (int i = 0 ; i < tmp->childs.size(); i++){
             CompleteNodes(tmp->childs[i]);
+        }
+    }
+
+    void GetLeveles(){
+        int temp = CountNodesOnLevel.size();
+        for (int i = 0; i < temp; i++){
+            qDebug()<<"level ["<<i<<"] = "<<CountNodesOnLevel[i];
         }
     }
 

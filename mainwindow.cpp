@@ -9,22 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     Start();
     BuildTree tree(arrayValNodes);
-
-    scene = new QGraphicsScene(this);                               // Инициализируем графическую сцену
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);             // настраиваем индексацию элементов
-
-    ui->graphicsView->resize(600,300);                              // Устанавливаем размер graphicsView
-    ui->graphicsView->setScene(scene);                              // Устанавливаем графическую сцену в graphicsView
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);        // Настраиваем рендер
-    ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground); // Кэш фона
-    ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-
-    scene->setSceneRect(0,0,800,300);
-
-    DrawingObjects* item = new DrawingObjects();
-    item->setPos(100,100);
-    scene->addItem(item);
-
+    DrawingTree();
 }
 
 MainWindow::~MainWindow()
@@ -58,4 +43,28 @@ void MainWindow::Start(){
             column++;
     }
     file.close();
+}
+
+void MainWindow::DrawingNode(){
+    for (int i = 0; i < 3; i++){
+        DrawingObjects* item = new DrawingObjects();
+        item->text = QString::number(i+1);
+        item->setPos((i+1)*100,100);
+        scene->addItem(item);
+    }
+
+}
+
+void MainWindow::DrawingTree(){
+
+    scene = new QGraphicsScene(this);                               // Инициализируем графическую сцену
+    scene->setItemIndexMethod(QGraphicsScene::NoIndex);             // настраиваем индексацию элементов
+    ui->graphicsView->resize(600,300);                              // Устанавливаем размер graphicsView
+    ui->graphicsView->setScene(scene);                              // Устанавливаем графическую сцену в graphicsView
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);        // Настраиваем рендер
+    ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground); // Кэш фона
+    ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    scene->setSceneRect(0,0,800,300);
+
+    DrawingNode();
 }
