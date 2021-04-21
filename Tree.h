@@ -56,7 +56,29 @@ public:
         tmp->childs.push_back(child);
 
         return true;
+    }
+    Node* GetRoot(){
+        return root;
+    }
 
+    void BypassTree(Node *n){
+        if(!n->childs.isEmpty()){
+            int temp = n->childs.size();
+            for(int i=0; i<temp; i++){
+                qDebug()<<"node - "<<n->id<<" child num - "<<n->childs[i]->id;
+                BypassTree(n->childs[i]);
+            }
+        }
+
+    }
+
+    void BypassTreeStart(){
+        Node *tmp = GetRoot();
+
+        for (int i = 0 ; i < tmp->childs.size(); i++){
+            qDebug()<<"node - "<<tmp->id<<" child num - "<<tmp->childs[i]->id;
+            BypassTree(tmp->childs[i]);
+        }
     }
 
 private:
@@ -84,6 +106,7 @@ private:
             //qDebug()<<"------";
             return nullptr;
         }
+
 
 
 };

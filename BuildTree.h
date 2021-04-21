@@ -20,6 +20,7 @@ public:
     }
     void Building(){
         OpenFile();
+        tree.BypassTreeStart();
     }
     void OpenFile(){
         QFile file("C:/Users/User/Desktop/min_max/nodes.txt");
@@ -51,6 +52,7 @@ public:
 
         }
         file.close();
+
     }
 
 };
