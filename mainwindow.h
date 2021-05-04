@@ -11,11 +11,12 @@
 
 #include "iostream"
 
+#include "Tree.h"
 #include "BuildTree.h"
 #include "DrawingObjects.h"
 
-const int WIDTH = 1000;
-const int HEIGHT = 300;
+//const int WIDTH = 1000;
+//const int HEIGHT = 300;
 
 using namespace std;
 
@@ -32,8 +33,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void DrawingNode(QVector <int> levels);
+    //void DrawingNode(QVector <NodesOnLevels> levels);
+    void DrawingNode(QVector <NodeForDrawing> drawingNode);
     void DrawingTree();
+    void DrawingConnection();
 
 private:
     Ui::MainWindow *ui;

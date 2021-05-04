@@ -21,7 +21,11 @@ public:
         tree.BypassTreeStart();
     }
 
-    QVector <int> CountNodesOnLevel(){
+    QVector <NodeForDrawing> ReturnNodesForDrawing(){
+        return tree.NodesDrawing;
+    }
+
+    QVector <NodesOnLevels> CountNodesOnLevel(){
         return tree.CountNodesOnLevel;
     }
 
@@ -53,6 +57,7 @@ public:
         file.close();
 
         tree.CompleteNodesStart();
+        tree.ForCoordsBypassTreeStart();
 
     }
 

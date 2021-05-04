@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     Start();
     BuildTree tree(arrayValNodes);
+
     DrawingTree();
-    DrawingNode(tree.CountNodesOnLevel());
+    //DrawingNode(tree.CountNodesOnLevel());
+    DrawingNode(tree.ReturnNodesForDrawing());
 }
 
 MainWindow::~MainWindow()
@@ -45,13 +47,14 @@ void MainWindow::Start(){
     }
     file.close();
 }
-
-void MainWindow::DrawingNode(QVector <int> levels){
+/*
+void MainWindow::DrawingNode(QVector <NodesOnLevels> levels){
     int width = 0;
     int height = 0;
+
     int CountLevels = levels.size();
     for (int n = 0; n < CountLevels; n++) {
-        int CountNodes = levels[n];
+        int CountNodes = levels[n].CountNodes;
         for (int i = 0; i < CountNodes; i++){
             DrawingObjects* item = new DrawingObjects();
             item->text = QString::number(i+1);
@@ -63,11 +66,34 @@ void MainWindow::DrawingNode(QVector <int> levels){
                 width = (WIDTH)/CountNodes*(i+1);
                 height = 50*(n+1);
             }
+//            if (n == 1){
+//                item->CoordsLine[0] = 0;
+//                item->CoordsLine[1] = 0;
+//                item->CoordsLine[2] = WIDTH/2-width;
+//                item->CoordsLine[3] = -50;
+//            }else if (!n){
+
+//            }
             item->setPos(width,height);
             scene->addItem(item);
         }
     }
 
+}
+*/
+
+void MainWindow::DrawingNode(QVector <NodeForDrawing> drawingNode){
+
+    int sizeNode = drawingNode.size();
+
+    for (int i = 0; i < sizeNode; i++){
+        DrawingObjects* item = new DrawingObjects();
+        item->setPos(drawingNode[i].x,drawingNode[i].y);
+        scene->addItem(item);
+    }
+}
+
+void MainWindow::DrawingConnection(){
 
 }
 
@@ -82,5 +108,4 @@ void MainWindow::DrawingTree(){
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     scene->setSceneRect(0,0,WIDTH,HEIGHT);
 
-    //DrawingNode();
 }
