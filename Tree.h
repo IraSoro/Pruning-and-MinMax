@@ -145,7 +145,6 @@ public:
         CountNodesOnLevel[n->level].CurrentCoords += ( WIDTH / CountNodesOnLevel[n->level].CountNodes);
         n->x = CountNodesOnLevel[n->level].CurrentCoords;
         n->y = 50*(n->level+1);
-        qDebug()<<"x= "<<n->x<<"y = "<<n->y<<"level = "<<n->level;
 
         NodeForDrawing TempNode;
         TempNode.x = n->x;
@@ -168,7 +167,7 @@ public:
         CountNodesOnLevel[0].CurrentCoords = WIDTH/2;
         tmp->x = CountNodesOnLevel[0].CurrentCoords;
         tmp->y = (tmp->level+1)*50;
-        qDebug()<<"x= "<<tmp->x<<"y = "<<tmp->y<<"level = "<<tmp->level;
+
         NodeForDrawing TempNode;
         TempNode.x = tmp->x;
         TempNode.y = tmp->y;
@@ -177,7 +176,6 @@ public:
         NodesDrawing.push_back(TempNode);
 
         for (int i = 0 ; i < tmp->childs.size(); i++){
-            qDebug()<<"node - "<<tmp->id<<" data = "<<tmp->childs[i]->data<<"node - "<<tmp->level;
             ForCoordsBypassTree(tmp->childs[i]);
         }
     }

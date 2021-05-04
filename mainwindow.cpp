@@ -84,13 +84,25 @@ void MainWindow::DrawingNode(QVector <NodesOnLevels> levels){
 
 void MainWindow::DrawingNode(QVector <NodeForDrawing> drawingNode){
 
-    int sizeNode = drawingNode.size();
+    DrawingObjects* item = new DrawingObjects();
+    item->setPos(drawingNode[0].x,drawingNode[0].y);
+    scene->addItem(item);
 
-    for (int i = 0; i < sizeNode; i++){
+    int sizeNode = drawingNode.size();
+    for (int i = 1; i < sizeNode; i++){
         DrawingObjects* item = new DrawingObjects();
         item->setPos(drawingNode[i].x,drawingNode[i].y);
+        for (int j = 0; j < sizeNode; j++){
+            if (drawingNode[j].id == drawingNode[i].IndesParent){
+                item->CoordsLine[0] = 0;
+                item->CoordsLine[1] = 0;
+                item->CoordsLine[2] = drawingNode[j].x-drawingNode[i].x;
+                item->CoordsLine[3] = -35;
+            }
+        }
         scene->addItem(item);
     }
+
 }
 
 void MainWindow::DrawingConnection(){

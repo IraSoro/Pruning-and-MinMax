@@ -49,6 +49,8 @@ public:
             painter->setPen(Qt::black);
             painter->setBrush(Qt::white);
 
+            painter->drawLine(CoordsLine[0], CoordsLine[1], CoordsLine[2], CoordsLine[3]);
+
             QPainterPath path1;
             path1.addEllipse(boundingRect());
             painter->drawPath(path1);
