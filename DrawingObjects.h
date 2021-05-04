@@ -16,7 +16,7 @@ public:
     explicit DrawingObjects(){}
     ~DrawingObjects(){}
 
-    QString text = "1";
+    QString text = "";
     int CoordsLine[4] = {0,0,0,0};
     bool DrawLine = false;
 
@@ -62,7 +62,7 @@ public:
             int textWidth = fm.width(text);
 
             painter->translate(0, 0);
-            //painter->drawText(-textWidth/2, 0, text);
+            painter->drawText(-textWidth/2, 0, text);
 
         }
 

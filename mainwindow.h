@@ -28,15 +28,23 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    QVector <int> arrayValNodes;
+public:    
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //void DrawingNode(QVector <NodesOnLevels> levels);
     void DrawingNode(QVector <NodeForDrawing> drawingNode);
     void DrawingTree();
     void DrawingConnection();
+    BuildTree* ReturnBuildTree();
+
+    BuildTree* tree;
+
+    QVector <int> arrayValNodes;
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -44,6 +52,7 @@ private:
     QPainter *painter;
     QVector <DrawingObjects*> items;
     void Start();
+    bool FlagClick = false;
 
 };
 #endif // MAINWINDOW_H

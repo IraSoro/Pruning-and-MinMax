@@ -18,7 +18,7 @@ struct Node{
     int countChilds = 0;
     QVector <Node*> childs ;
     Node *parent;
-    int data = 0;
+    int data = -1;
     int id = 0;
     int level = 0;
     int x = 0;
@@ -36,6 +36,7 @@ struct NodeForDrawing{
     int y = 0;
     int id = 0;
     int IndesParent = 0;
+    int data = -1;
 };
 
 class Tree{
@@ -51,7 +52,7 @@ public:
     int CountNodes = 0;
     int numArrayDataNode = 0;
 
-    void AddRoot(int id, int countChilds, int data = 0){
+    void AddRoot(int id, int countChilds, int data = -1){
         root = new Node();
         root->data = data;
         root->countChilds = countChilds;
@@ -63,7 +64,7 @@ public:
         return;
     }
 
-    bool AddChilNode(int parentId, int id, int countChilds, int val = 0){
+    bool AddChilNode(int parentId, int id, int countChilds, int data = -1){
 
         Node *tmp = FindNodeById(root, parentId);
         if(!tmp){
@@ -78,7 +79,7 @@ public:
 
         Node *child = new Node();
         child->id = id;
-        child->data = val;
+        child->data = data;
         child->countChilds = countChilds;
         child->level = tmp->level + 1;
         if (CountNodesOnLevel.size() != tmp->level + 2){
@@ -149,6 +150,7 @@ public:
         NodeForDrawing TempNode;
         TempNode.x = n->x;
         TempNode.y = n->y;
+        TempNode.data = n->data;
         TempNode.id = n->id;
         TempNode.IndesParent = n->parent->id;
         NodesDrawing.push_back(TempNode);
@@ -171,6 +173,7 @@ public:
         NodeForDrawing TempNode;
         TempNode.x = tmp->x;
         TempNode.y = tmp->y;
+        TempNode.data = tmp->data;
         TempNode.id = tmp->id;
         TempNode.IndesParent = -1;
         NodesDrawing.push_back(TempNode);
@@ -189,7 +192,128 @@ public:
         qDebug()<<"CountNodes = "<<CountNodes;
     }
 
+    void DefineDataNodesByMinMaxStart(bool FlagMax){
+        if (FlagMax){
+            DefineDataNodesByMaxStart();
+        }else{
+            DefineDataNodesByMimStart();
+        }
+    }
+
 private:
+    void DefineDataNodesByMaxStart(){
+        Node *tmp = GetRoot();
+        int MaxData = 0;
+        for (int i = 0; i < tmp->countChilds; i++){
+            if (tmp->childs[i]->data < 0){
+                DefineDataNodesByMax(tmp->childs[i]);
+            }
+            if (tmp->childs[i]->data > MaxData)
+                MaxData = tmp->childs[i]->data;
+        }
+
+        tmp->data = MaxData;
+        for (int j = 0; j < NodesDrawing.size(); j++){
+            if (tmp->id == NodesDrawing[j].id){
+                NodesDrawing[j].data = tmp->data;
+                break;
+            }
+        }
+    }
+    void DefineDataNodesByMax(Node *n){
+        if (n->countChilds > 0){
+            int MaxData = 0;
+            int MinData = 1000;
+            bool flag = false;
+            if ((n->level)%2 == 0)
+                flag = true;
+
+            for (int i = 0; i < n->countChilds; i++){
+                if (n->childs[i]->data < 0){
+                    DefineDataNodesByMax(n->childs[i]);
+                }
+                if (flag){
+                    if(MaxData < n->childs[i]->data){
+                        MaxData = n->childs[i]->data;
+                    }
+                }else{
+                    if(MinData > n->childs[i]->data){
+                        MinData = n->childs[i]->data;
+                    }
+                }
+            }
+            if (flag)
+                n->data = MaxData;
+            else
+                n->data = MinData;
+
+            for (int j = 0; j < NodesDrawing.size(); j++){
+                if (n->id == NodesDrawing[j].id){
+                    NodesDrawing[j].data = n->data;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    void DefineDataNodesByMimStart(){
+        Node *tmp = GetRoot();
+        int MinData = 1000;
+        for (int i = 0; i < tmp->countChilds; i++){
+            if (tmp->childs[i]->data < 0){
+                DefineDataNodesByMin(tmp->childs[i]);
+            }
+            if (tmp->childs[i]->data < MinData)
+                MinData = tmp->childs[i]->data;
+        }
+
+        tmp->data = MinData;
+        for (int j = 0; j < NodesDrawing.size(); j++){
+            if (tmp->id == NodesDrawing[j].id){
+                NodesDrawing[j].data = tmp->data;
+                break;
+            }
+        }
+    }
+
+    void DefineDataNodesByMin(Node *n){
+        if (n->countChilds > 0){
+            int MaxData = 0;
+            int MinData = 1000;
+            bool flag = false;
+            if ((n->level)%2 == 0)
+                flag = true;
+
+            for (int i = 0; i < n->countChilds; i++){
+                if (n->childs[i]->data < 0){
+                    DefineDataNodesByMin(n->childs[i]);
+                }
+                if (flag){
+                    if(MinData > n->childs[i]->data){
+                        MinData = n->childs[i]->data;
+                    }
+                }else{
+                    if(MaxData < n->childs[i]->data){
+                        MaxData = n->childs[i]->data;
+                    }
+                }
+            }
+            if (flag)
+                n->data = MinData;
+            else
+                n->data = MaxData;
+
+            for (int j = 0; j < NodesDrawing.size(); j++){
+                if (n->id == NodesDrawing[j].id){
+                    NodesDrawing[j].data = n->data;
+                    break;
+                }
+            }
+        }
+
+    }
+
     Node* FindNodeById(Node *n, int id){
             if(!n){
                 qDebug()<<"Error in 1_FindNodeById";

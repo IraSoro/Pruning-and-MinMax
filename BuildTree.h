@@ -29,6 +29,10 @@ public:
         return tree.CountNodesOnLevel;
     }
 
+    void DefineDataInNode(bool max){
+        tree.DefineDataNodesByMinMaxStart(max);
+    }
+
     void OpenFile(){
         QFile file("C:/Users/User/Desktop/min_max/nodes.txt");
         file.open(QIODevice::ReadOnly);
