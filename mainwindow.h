@@ -14,6 +14,9 @@
 #include "BuildTree.h"
 #include "DrawingObjects.h"
 
+const int WIDTH = 1000;
+const int HEIGHT = 300;
+
 using namespace std;
 
 QT_BEGIN_NAMESPACE
@@ -29,7 +32,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void DrawingNode();
+    void DrawingNode(QVector <int> levels);
     void DrawingTree();
 
 private:

@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QCursor>
 
+#include "Tree.h"
+
 class DrawingObjects : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -36,7 +38,7 @@ public:
         int textWidth = fm.width(text);
 
         painter->translate(0, 0);
-        painter->drawText(-textWidth/2, 0, text);
+        //painter->drawText(-textWidth/2, 0, text);
 
     }
 

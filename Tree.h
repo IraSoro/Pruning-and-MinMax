@@ -29,6 +29,7 @@ public:
     Node *root;
     QVector <int> arrayDataNodes;
     QVector <int> CountNodesOnLevel;
+    int CountNodes = 0;
     int numArrayDataNode = 0;
 
     void AddRoot(int id, int countChilds, int data = 0){
@@ -95,7 +96,6 @@ public:
     }
 
     void CompleteNodes(Node *n){
-
         if (!n->childs.size() && n->countChilds){
             int temp = n->countChilds;
             for(int i=0; i<temp; i++){
@@ -118,11 +118,38 @@ public:
         }
     }
 
+    void CompleteNodesForRetunrLevel(Node *n){
+        if (!n->childs.size() && n->countChilds){
+            int temp = n->countChilds;
+            for(int i=0; i<temp; i++){
+                AddChilNode(n->id, 101 + numArrayDataNode, 0, arrayDataNodes[numArrayDataNode]);
+                numArrayDataNode++;
+            }
+        } else{
+            int val = n->childs.size();
+            for(int i=0; i<val; i++)
+                CompleteNodes(n->childs[i]);
+        }
+
+    }
+
+    void CompleteNodesStartForRetunrLevel(){
+        Node *tmp = GetRoot();
+
+        for (int i = 0 ; i < tmp->childs.size(); i++){
+            CompleteNodes(tmp->childs[i]);
+        }
+    }
+
+
+
     void GetLeveles(){
         int temp = CountNodesOnLevel.size();
         for (int i = 0; i < temp; i++){
             qDebug()<<"level ["<<i<<"] = "<<CountNodesOnLevel[i];
+            CountNodes += CountNodesOnLevel[i];
         }
+        qDebug()<<"CountNodes = "<<CountNodes;
     }
 
 private:

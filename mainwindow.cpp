@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     Start();
     BuildTree tree(arrayValNodes);
     DrawingTree();
+    DrawingNode(tree.CountNodesOnLevel());
 }
 
 MainWindow::~MainWindow()
@@ -45,13 +46,28 @@ void MainWindow::Start(){
     file.close();
 }
 
-void MainWindow::DrawingNode(){
-    for (int i = 0; i < 3; i++){
-        DrawingObjects* item = new DrawingObjects();
-        item->text = QString::number(i+1);
-        item->setPos((i+1)*100,100);
-        scene->addItem(item);
+void MainWindow::DrawingNode(QVector <int> levels){
+    int width = 0;
+    int height = 0;
+    int CountLevels = levels.size();
+    for (int n = 0; n < CountLevels; n++) {
+        int CountNodes = levels[n];
+        for (int i = 0; i < CountNodes; i++){
+            DrawingObjects* item = new DrawingObjects();
+            item->text = QString::number(i+1);
+            if (n == 0){
+                width = WIDTH/2;
+                height = 50*(n+1);
+            }
+            else{
+                width = (WIDTH)/CountNodes*(i+1);
+                height = 50*(n+1);
+            }
+            item->setPos(width,height);
+            scene->addItem(item);
+        }
     }
+
 
 }
 
@@ -59,12 +75,12 @@ void MainWindow::DrawingTree(){
 
     scene = new QGraphicsScene(this);                               // Инициализируем графическую сцену
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);             // настраиваем индексацию элементов
-    ui->graphicsView->resize(600,300);                              // Устанавливаем размер graphicsView
+    ui->graphicsView->resize(WIDTH,HEIGHT);                         // Устанавливаем размер graphicsView
     ui->graphicsView->setScene(scene);                              // Устанавливаем графическую сцену в graphicsView
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);        // Настраиваем рендер
     ui->graphicsView->setCacheMode(QGraphicsView::CacheBackground); // Кэш фона
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    scene->setSceneRect(0,0,800,300);
+    scene->setSceneRect(0,0,WIDTH,HEIGHT);
 
-    DrawingNode();
+    //DrawingNode();
 }

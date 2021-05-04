@@ -21,6 +21,10 @@ public:
         tree.BypassTreeStart();
     }
 
+    QVector <int> CountNodesOnLevel(){
+        return tree.CountNodesOnLevel;
+    }
+
     void OpenFile(){
         QFile file("C:/Users/User/Desktop/min_max/nodes.txt");
         file.open(QIODevice::ReadOnly);
