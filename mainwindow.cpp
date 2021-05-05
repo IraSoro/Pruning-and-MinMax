@@ -68,7 +68,7 @@ void MainWindow::DrawingNode(QVector <NodeForDrawing> drawingNode){
         for (int j = 0; j < sizeNode; j++){
             if (drawingNode[j].id == drawingNode[i].IndesParent){
                 item->CoordsLine[0] = 0;
-                item->CoordsLine[1] = 0;
+                item->CoordsLine[1] = -15;
                 item->CoordsLine[2] = drawingNode[j].x-drawingNode[i].x;
                 item->CoordsLine[3] = -35;
                 break;
@@ -91,12 +91,78 @@ void MainWindow::DrawingTree(){
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     scene->setSceneRect(0,0,WIDTH,HEIGHT);
 
+    DrawingLinesAndInf();
+}
+void MainWindow::DrawingLinesAndInf(){
+    QPen pen(qRgb(255,255,0));
+    int h = 50;
+    for (int i = 0; i < 4; i++){
+        scene->addLine(20, h*(i+1), 1100, h*(i+1), pen);
+    }
+
+    pen.setColor(qRgb(0,0,0));
+    scene->addLine(10, 0, 10, HEIGHT, pen);
+
+    int radius = 30;
+    int xEllipse = -80;
+    int yEllipse = 35;
+
+    pen.setColor(Qt::black);
+    QBrush brush(qRgb(255,255,0));
+
+    brush.setColor(Qt::red);
+    scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
+    QGraphicsTextItem *textItem1 = new QGraphicsTextItem();
+    textItem1->setPos(xEllipse+30, yEllipse);
+    textItem1->setPlainText("альфа");
+    scene->addItem(textItem1);
+
+    yEllipse += 50;
+    brush.setColor(Qt::green);
+    scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
+    QGraphicsTextItem *textItem2 = new QGraphicsTextItem();
+    textItem2->setPos(xEllipse+30, yEllipse);
+    textItem2->setPlainText("бетта");
+    scene->addItem(textItem2);
+
+    yEllipse += 50;
+    brush.setColor(Qt::yellow);
+    scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
+    QGraphicsTextItem *textItem3 = new QGraphicsTextItem();
+    textItem3->setPos(xEllipse+30, yEllipse);
+    textItem3->setPlainText("глуб.альфа");
+    scene->addItem(textItem3);
+
+    yEllipse += 50;
+    brush.setColor(Qt::blue);
+    scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
+    QGraphicsTextItem *textItem4 = new QGraphicsTextItem();
+    textItem4->setPos(xEllipse+30, yEllipse);
+    textItem4->setPlainText("глуб.бетта");
+    scene->addItem(textItem4);
+
 }
 
+void MainWindow::OutputText(bool FlagMax){
+    int h = 50;
+    int w = 20;
+    for (int i = 0; i < 4; i++){
+        QGraphicsTextItem *textItem = new QGraphicsTextItem();
+        textItem->setPos(w, h*(i+1)-20);
+        if (i%2 == FlagMax)
+            textItem->setPlainText("MIN");
+        else
+            textItem->setPlainText("MAX");
+        scene->addItem(textItem);
+    }
+}
+
+
 void MainWindow::on_pushButton_clicked(){
-    FlagClick = true;
     OnMax = true;
     scene->clear();
+    DrawingLinesAndInf();
+    OutputText(OnMax);
     BuildTree ttree(arrayValNodes);
     ttree.DefineDataInNode(true);
     DrawingNode(ttree.ReturnNodesForDrawing());
@@ -104,9 +170,10 @@ void MainWindow::on_pushButton_clicked(){
 }
 
 void MainWindow::on_pushButton_2_clicked(){
-    FlagClick = true;
     OnMax = false;
     scene->clear();
+    DrawingLinesAndInf();
+    OutputText(OnMax);
     BuildTree ttree(arrayValNodes);
     ttree.DefineDataInNode(false);
     DrawingNode(ttree.ReturnNodesForDrawing());
@@ -124,6 +191,8 @@ void MainWindow::on_pushButton_3_clicked(){
     }
     ttree.ClippingTree(OnMax);
 
+    DrawingLinesAndInf();
+    OutputText(OnMax);
     DrawingNode(ttree.ReturnNodesForDrawing());
     ttree.ClearTree();
 }

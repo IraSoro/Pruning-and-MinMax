@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QGraphicsScene>
+#include <QGraphicsTextItem>
 
 #include <QFile>
 #include <QString>
@@ -32,6 +33,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void DrawingLinesAndInf();
+    void OutputText(bool FlagMax);
     void DrawingNode(QVector <NodeForDrawing> drawingNode);
     void DrawingTree();
     void DrawingConnection();
@@ -55,7 +58,6 @@ private:
     QVector <DrawingObjects*> items;
     void Start();
     bool OnMax = false;
-    bool FlagClick = false;
 
 };
 #endif // MAINWINDOW_H

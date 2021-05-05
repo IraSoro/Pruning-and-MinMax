@@ -24,29 +24,29 @@ public:
         return QRectF (-15,-15,30,30);
     }
 
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *){
-            painter->setPen(Qt::black);
-            switch(Color){
-                case 0:
-                    painter->setBrush(Qt::white);
-                    break;
-                case 1:
-                    painter->setBrush(Qt::green);
-                    break;
-                case 2:
-                    painter->setBrush(Qt::red);
-                    break;
-                case 3:
-                    painter->setBrush(Qt::blue);
-                    break;
-                case 4:
-                    painter->setBrush(Qt::yellow);
-                    break;
-                default:
-                    painter->setBrush(Qt::white);
-                    break;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *){
+        painter->setPen(Qt::black);
+        switch(Color){
+            case 0:
+                painter->setBrush(Qt::white);
+                break;
+            case 1:
+                painter->setBrush(Qt::green);
+                break;
+            case 2:
+                painter->setBrush(Qt::red);
+                break;
+            case 3:
+                painter->setBrush(Qt::blue);
+                break;
+            case 4:
+                painter->setBrush(Qt::yellow);
+                break;
+            default:
+                painter->setBrush(Qt::white);
+                break;
 
-            }
+        }
 
             painter->drawLine(CoordsLine[0], CoordsLine[1], CoordsLine[2], CoordsLine[3]);
 
