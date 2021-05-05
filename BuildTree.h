@@ -23,6 +23,8 @@ public:
 
     void ClippingTree(bool max){
         tree.ClippingStart(max);
+        tree.DeepClipping(max);
+        tree.DefineDataNodesByMinMaxStart(max);
     }
 
     QVector <NodeForDrawing> ReturnNodesForDrawing(){

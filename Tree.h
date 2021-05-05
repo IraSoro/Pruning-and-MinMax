@@ -103,7 +103,7 @@ public:
         if(!n->childs.isEmpty()){
             int temp = n->childs.size();
             for(int i=0; i<temp; i++){
-                qDebug()<<"node - "<<n->id<<" level - "<<n->level<<" child num - "<<n->childs[i]->id<<" count childs "<<n->childs[i]->countChilds<<" fact count childs "<<n->childs[i]->childs.size()<<" data = "<<n->childs[i]->data;
+                //qDebug()<<"node - "<<n->id<<" level - "<<n->level<<" child num - "<<n->childs[i]->id<<" count childs "<<n->childs[i]->countChilds<<" fact count childs "<<n->childs[i]->childs.size()<<" data = "<<n->childs[i]->data;
                 BypassTree(n->childs[i]);
             }
         }
@@ -113,7 +113,7 @@ public:
         Node *tmp = GetRoot();
 
         for (int i = 0 ; i < tmp->childs.size(); i++){
-            qDebug()<<"node - "<<tmp->id<<" level - "<<tmp->level<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data;
+            //qDebug()<<"node - "<<tmp->id<<" level - "<<tmp->level<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data;
             BypassTree(tmp->childs[i]);
         }
 
@@ -194,6 +194,10 @@ public:
     }
 
     void DefineDataNodesByMinMaxStart(bool FlagMax){
+        if (root->data >= 0){
+            NullifyInNodeDataStart();
+        }
+
         if (FlagMax){
             DefineDataNodesByMaxStart();
         }else{
@@ -225,9 +229,10 @@ public:
         if (flagMAX){
             if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 2)){
                 for (int i = 0; i < tmp->countChilds-1; i++){
-                    if (tmp->childs[i]->data > tmp->childs[i+1]->childs[0]->data){
-                        MarkClippingStart(flagMAX, tmp->childs[i+1]);
-                    }
+                    for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
+                        if (tmp->childs[i]->data > tmp->childs[i+1]->childs[j]->data){
+                            MarkClippingStart(0, flagMAX, tmp->childs[i+1]);
+                        }
                     Clipping(0, tmp->childs[i]);
                 }
                 Clipping(0, tmp->childs[tmp->countChilds-1]);
@@ -236,14 +241,14 @@ public:
         else{
             if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 2)){
                 for (int i = 0; i < tmp->countChilds-1; i++){
-                    if (tmp->childs[i]->data < tmp->childs[i+1]->childs[0]->data){
-                        MarkClippingStart(flagMAX, tmp->childs[i+1]);
-                    }
+                    for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
+                        if (tmp->childs[i]->data < tmp->childs[i+1]->childs[j]->data){
+                            MarkClippingStart(0, flagMAX, tmp->childs[i+1]);
+                        }
                     Clipping(1, tmp->childs[i]);
                 }
                 Clipping(1, tmp->childs[tmp->countChilds-1]);
             }
-
         }
     }
 
@@ -254,7 +259,7 @@ public:
                 for (int i = 0; i < n->countChilds-1; i++){
                     for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
                         if (n->childs[i]->data > n->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(flagMax, n->childs[i+1]);
+                            MarkClippingStart(0, flagMax, n->childs[i+1]);
                         }
                     Clipping(0, n->childs[i]);
                 }
@@ -266,7 +271,7 @@ public:
                 for (int i = 0; i < n->countChilds-1; i++){
                     for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
                         if (n->childs[i]->data < n->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(flagMax, n->childs[i+1]);
+                            MarkClippingStart(0, flagMax, n->childs[i+1]);
                         }
                     Clipping(1, n->childs[i]);
                 }
@@ -275,53 +280,48 @@ public:
         }
     }
 
-
-    void MarkClippingStart(bool flagMax, Node *n){
+    void DeepClipping(bool flagMax){
+        Node *tmp = GetRoot();
         if (flagMax){
-            if(!n->childs.isEmpty() && n->clipping == 0){
-                for(int i=1; i<n->countChilds; i++){
-                    MarkClipping(flagMax, n->childs[i]);
-                    n->childs[i]->clipping = 2;
-
-                    for (int j = 0; j < NodesDrawing.size(); j++){
-                        if (n->childs[i]->id == NodesDrawing[j].id){
-                            NodesDrawing[j].clipping = n->childs[i]->clipping;
-                            break;
+            if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 4)){
+                for (int i = 0; i < tmp->countChilds-1; i++){
+                    for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
+                        if (tmp->childs[i]->data > tmp->childs[i+1]->childs[0]->childs[0]->childs[j]->data){
+                            MarkClippingStart(1, flagMax,  tmp->childs[i+1]->childs[0]->childs[0]);
                         }
-                    }
                 }
             }
         }
         else{
-            if(!n->childs.isEmpty() &&  n->clipping == 0){
-                for(int i=1; i<n->countChilds; i++){
-                    MarkClipping(flagMax, n->childs[i]);
-                    n->childs[i]->clipping = 1;
-
-                    for (int j = 0; j < NodesDrawing.size(); j++){
-                        if (n->childs[i]->id == NodesDrawing[j].id){
-                            NodesDrawing[j].clipping = n->childs[i]->clipping;
-                            break;
+            if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 4)){
+                for (int i = 0; i < tmp->countChilds-1; i++){
+                    for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
+                        if (tmp->childs[i]->data < tmp->childs[i+1]->childs[0]->childs[0]->childs[j]->data){
+                            MarkClippingStart(1, flagMax, tmp->childs[i+1]->childs[0]->childs[0]);
                         }
-                    }
                 }
             }
-
         }
-
     }
 
-    void MarkClipping(bool flagMax, Node *n){
+
+    void MarkClippingStart(bool flagDeep, bool flagMax, Node *n){
         int color = 0;
-        if (flagMax){
-            color = 2;
+        if (flagDeep){
+            if (flagMax)
+                color = 4;
+            else
+                color = 3;
         }
         else{
-            color = 1;
+            if (flagMax)
+                color = 2;
+            else
+                color = 1;
         }
         if(!n->childs.isEmpty() && n->clipping == 0){
-            for(int i=0; i<n->countChilds; i++){
-                MarkClipping(flagMax, n->childs[i]);
+            for(int i=1; i<n->countChilds; i++){
+                MarkClipping(flagDeep, flagMax, n->childs[i]);
                 n->childs[i]->clipping = color;
 
                 for (int j = 0; j < NodesDrawing.size(); j++){
@@ -332,18 +332,65 @@ public:
                 }
             }
         }
+    }
 
+    void MarkClipping(bool flagDeep, bool flagMax, Node *n){
+        int color = 0;
+        if (flagDeep){
+            if (flagMax)
+                color = 4;
+            else
+                color = 3;
+        }
+        else{
+            if (flagMax)
+                color = 2;
+            else
+                color = 1;
+        }
+        if(!n->childs.isEmpty() && n->clipping == 0){
+            for(int i=0; i<n->countChilds; i++){
+                MarkClipping(flagDeep, flagMax, n->childs[i]);
+                n->childs[i]->clipping = color;
+
+                for (int j = 0; j < NodesDrawing.size(); j++){
+                    if (n->childs[i]->id == NodesDrawing[j].id){
+                        NodesDrawing[j].clipping = n->childs[i]->clipping;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 private:
+    void NullifyInNodeData(Node *n){
+        if(!n->childs.isEmpty()){
+            int temp = n->childs.size();
+            for(int i=0; i<temp; i++){
+                BypassTree(n->childs[i]);
+            }
+        }
+        n->data = -1;
+    }
+
+    void NullifyInNodeDataStart(){
+        Node *tmp = GetRoot();
+        for (int i = 0 ; i < tmp->childs.size(); i++){
+            BypassTree(tmp->childs[i]);
+        }
+        tmp->data = -1;
+    }
+
+
     void DefineDataNodesByMaxStart(){
         Node *tmp = GetRoot();
         int MaxData = 0;
         for (int i = 0; i < tmp->countChilds; i++){
-            if (tmp->childs[i]->data < 0){
+            if (tmp->childs[i]->data < 0 && !tmp->childs[i]->clipping){
                 DefineDataNodesByMax(tmp->childs[i]);
             }
-            if (tmp->childs[i]->data > MaxData)
+            if (tmp->childs[i]->data > MaxData && !tmp->childs[i]->clipping)
                 MaxData = tmp->childs[i]->data;
         }
 
@@ -364,16 +411,18 @@ private:
                 flag = true;
 
             for (int i = 0; i < n->countChilds; i++){
-                if (n->childs[i]->data < 0){
+                if (n->childs[i]->data < 0 && n->childs[i]->clipping == 0){
                     DefineDataNodesByMax(n->childs[i]);
                 }
-                if (flag){
-                    if(MaxData < n->childs[i]->data){
-                        MaxData = n->childs[i]->data;
-                    }
-                }else{
-                    if(MinData > n->childs[i]->data){
-                        MinData = n->childs[i]->data;
+                if (n->childs[i]->clipping == 0){
+                    if (flag){
+                        if(MaxData < n->childs[i]->data){
+                            MaxData = n->childs[i]->data;
+                        }
+                    }else{
+                        if(MinData > n->childs[i]->data){
+                            MinData = n->childs[i]->data;
+                        }
                     }
                 }
             }
@@ -396,7 +445,7 @@ private:
         Node *tmp = GetRoot();
         int MinData = 1000;
         for (int i = 0; i < tmp->countChilds; i++){
-            if (tmp->childs[i]->data < 0){
+            if (tmp->childs[i]->data < 0 && !tmp->childs[i]->clipping){
                 DefineDataNodesByMin(tmp->childs[i]);
             }
             if (tmp->childs[i]->data < MinData)
@@ -421,7 +470,7 @@ private:
                 flag = true;
 
             for (int i = 0; i < n->countChilds; i++){
-                if (n->childs[i]->data < 0){
+                if (n->childs[i]->data < 0 && !n->childs[i]->clipping){
                     DefineDataNodesByMin(n->childs[i]);
                 }
                 if (flag){

@@ -26,14 +26,27 @@ public:
 
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *){
             painter->setPen(Qt::black);
-            if(Color){
-                if (Color == 1)
+            switch(Color){
+                case 0:
+                    painter->setBrush(Qt::white);
+                    break;
+                case 1:
                     painter->setBrush(Qt::green);
-                else
+                    break;
+                case 2:
                     painter->setBrush(Qt::red);
+                    break;
+                case 3:
+                    painter->setBrush(Qt::blue);
+                    break;
+                case 4:
+                    painter->setBrush(Qt::yellow);
+                    break;
+                default:
+                    painter->setBrush(Qt::white);
+                    break;
+
             }
-            else
-                painter->setBrush(Qt::white);
 
             painter->drawLine(CoordsLine[0], CoordsLine[1], CoordsLine[2], CoordsLine[3]);
 

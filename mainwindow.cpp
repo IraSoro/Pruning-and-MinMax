@@ -60,15 +60,7 @@ void MainWindow::DrawingNode(QVector <NodeForDrawing> drawingNode){
         DrawingObjects* item = new DrawingObjects();
         item->setPos(drawingNode[i].x,drawingNode[i].y);
 
-        if (drawingNode[i].clipping){
-            if (drawingNode[i].clipping == 1)
-                item->Color = 1;
-            else
-                item->Color = 2;
-        }
-        else{
-            item->Color = 0;
-        }
+        item->Color = drawingNode[i].clipping;
 
         if (drawingNode[i].data > -1)
             item->text = QString::number(drawingNode[i].data);
