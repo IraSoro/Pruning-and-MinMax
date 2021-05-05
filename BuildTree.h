@@ -21,6 +21,10 @@ public:
         tree.BypassTreeStart();
     }
 
+    void ClippingTree(bool max){
+        tree.ClippingStart(max);
+    }
+
     QVector <NodeForDrawing> ReturnNodesForDrawing(){
         return tree.NodesDrawing;
     }
@@ -63,6 +67,10 @@ public:
         tree.CompleteNodesStart();
         tree.ForCoordsBypassTreeStart();
 
+    }
+
+    void ClearTree(){
+        tree.DeleteNode();
     }
 
 };

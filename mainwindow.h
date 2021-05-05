@@ -46,12 +46,15 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_pushButton_3_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QPainter *painter;
     QVector <DrawingObjects*> items;
     void Start();
+    bool OnMax = false;
     bool FlagClick = false;
 
 };

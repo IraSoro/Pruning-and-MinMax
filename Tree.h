@@ -22,8 +22,8 @@ struct Node{
     int id = 0;
     int level = 0;
     int x = 0;
-    int y = 0;
-
+    int y = 0;    
+    int clipping = 0;
 };
 
 struct NodesOnLevels{
@@ -37,6 +37,7 @@ struct NodeForDrawing{
     int id = 0;
     int IndesParent = 0;
     int data = -1;
+    int clipping = 0;
 };
 
 class Tree{
@@ -198,6 +199,140 @@ public:
         }else{
             DefineDataNodesByMimStart();
         }
+    }
+
+    void DeleteNode(){
+        Node *tmp = GetRoot();
+
+        for (int i = 0 ; i < tmp->childs.size(); i++){
+            DeleteNodeAll(tmp->childs[i]);
+        }
+        delete tmp;
+    }
+
+    void DeleteNodeAll(Node *n){
+        if(!n->childs.isEmpty()){
+            int temp = n->childs.size();
+            for(int i=0; i<temp; i++){
+                DeleteNodeAll(n->childs[i]);
+            }
+        }
+        delete n;
+    }
+
+    void ClippingStart(bool flagMAX){
+        Node *tmp = GetRoot();
+        if (flagMAX){
+            if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 2)){
+                for (int i = 0; i < tmp->countChilds-1; i++){
+                    if (tmp->childs[i]->data > tmp->childs[i+1]->childs[0]->data){
+                        MarkClippingStart(flagMAX, tmp->childs[i+1]);
+                    }
+                    Clipping(0, tmp->childs[i]);
+                }
+                Clipping(0, tmp->childs[tmp->countChilds-1]);
+            }
+        }
+        else{
+            if (tmp->countChilds > 1 && tmp->level < (CountNodesOnLevel.size() - 2)){
+                for (int i = 0; i < tmp->countChilds-1; i++){
+                    if (tmp->childs[i]->data < tmp->childs[i+1]->childs[0]->data){
+                        MarkClippingStart(flagMAX, tmp->childs[i+1]);
+                    }
+                    Clipping(1, tmp->childs[i]);
+                }
+                Clipping(1, tmp->childs[tmp->countChilds-1]);
+            }
+
+        }
+    }
+
+
+    void Clipping(bool flagMax, Node *n){
+        if (flagMax){
+            if (n->countChilds > 1 && n->level < (CountNodesOnLevel.size() - 2)  && !n->clipping){
+                for (int i = 0; i < n->countChilds-1; i++){
+                    for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
+                        if (n->childs[i]->data > n->childs[i+1]->childs[j]->data){
+                            MarkClippingStart(flagMax, n->childs[i+1]);
+                        }
+                    Clipping(0, n->childs[i]);
+                }
+                Clipping(0, n->childs[n->countChilds-1]);
+            }
+        }
+        else{
+            if (n->countChilds > 1 && n->level < (CountNodesOnLevel.size() - 2)  && !n->clipping){
+                for (int i = 0; i < n->countChilds-1; i++){
+                    for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
+                        if (n->childs[i]->data < n->childs[i+1]->childs[j]->data){
+                            MarkClippingStart(flagMax, n->childs[i+1]);
+                        }
+                    Clipping(1, n->childs[i]);
+                }
+                Clipping(1, n->childs[n->countChilds-1]);
+            }
+        }
+    }
+
+
+    void MarkClippingStart(bool flagMax, Node *n){
+        if (flagMax){
+            if(!n->childs.isEmpty() && n->clipping == 0){
+                for(int i=1; i<n->countChilds; i++){
+                    MarkClipping(flagMax, n->childs[i]);
+                    n->childs[i]->clipping = 2;
+
+                    for (int j = 0; j < NodesDrawing.size(); j++){
+                        if (n->childs[i]->id == NodesDrawing[j].id){
+                            NodesDrawing[j].clipping = n->childs[i]->clipping;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            if(!n->childs.isEmpty() &&  n->clipping == 0){
+                for(int i=1; i<n->countChilds; i++){
+                    MarkClipping(flagMax, n->childs[i]);
+                    n->childs[i]->clipping = 1;
+
+                    for (int j = 0; j < NodesDrawing.size(); j++){
+                        if (n->childs[i]->id == NodesDrawing[j].id){
+                            NodesDrawing[j].clipping = n->childs[i]->clipping;
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    void MarkClipping(bool flagMax, Node *n){
+        int color = 0;
+        if (flagMax){
+            color = 2;
+        }
+        else{
+            color = 1;
+        }
+        if(!n->childs.isEmpty() && n->clipping == 0){
+            for(int i=0; i<n->countChilds; i++){
+                MarkClipping(flagMax, n->childs[i]);
+                n->childs[i]->clipping = color;
+
+                for (int j = 0; j < NodesDrawing.size(); j++){
+                    if (n->childs[i]->id == NodesDrawing[j].id){
+                        NodesDrawing[j].clipping = n->childs[i]->clipping;
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
 private:

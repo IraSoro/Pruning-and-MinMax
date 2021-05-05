@@ -59,8 +59,20 @@ void MainWindow::DrawingNode(QVector <NodeForDrawing> drawingNode){
     for (int i = 1; i < sizeNode; i++){
         DrawingObjects* item = new DrawingObjects();
         item->setPos(drawingNode[i].x,drawingNode[i].y);
+
+        if (drawingNode[i].clipping){
+            if (drawingNode[i].clipping == 1)
+                item->Color = 1;
+            else
+                item->Color = 2;
+        }
+        else{
+            item->Color = 0;
+        }
+
         if (drawingNode[i].data > -1)
             item->text = QString::number(drawingNode[i].data);
+
         for (int j = 0; j < sizeNode; j++){
             if (drawingNode[j].id == drawingNode[i].IndesParent){
                 item->CoordsLine[0] = 0;
@@ -91,16 +103,35 @@ void MainWindow::DrawingTree(){
 
 void MainWindow::on_pushButton_clicked(){
     FlagClick = true;
+    OnMax = true;
     scene->clear();
     BuildTree ttree(arrayValNodes);
     ttree.DefineDataInNode(true);
     DrawingNode(ttree.ReturnNodesForDrawing());
+    ttree.ClearTree();
 }
 
 void MainWindow::on_pushButton_2_clicked(){
     FlagClick = true;
+    OnMax = false;
     scene->clear();
     BuildTree ttree(arrayValNodes);
     ttree.DefineDataInNode(false);
     DrawingNode(ttree.ReturnNodesForDrawing());
+    ttree.ClearTree();
+}
+
+void MainWindow::on_pushButton_3_clicked(){
+    scene->clear();
+    BuildTree ttree(arrayValNodes);
+
+    if (OnMax){
+        ttree.DefineDataInNode(true);
+    }else{
+        ttree.DefineDataInNode(false);
+    }
+    ttree.ClippingTree(OnMax);
+
+    DrawingNode(ttree.ReturnNodesForDrawing());
+    ttree.ClearTree();
 }

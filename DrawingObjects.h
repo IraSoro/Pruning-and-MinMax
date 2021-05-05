@@ -18,36 +18,22 @@ public:
 
     QString text = "";
     int CoordsLine[4] = {0,0,0,0};
-    bool DrawLine = false;
+    int Color = 0;
 
     QRectF boundingRect() const{
         return QRectF (-15,-15,30,30);
     }
 
-//    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *){
-//        painter->setPen(Qt::black);
-//        painter->setBrush(Qt::white);
-
-//        //painter->drawLine(CoordsLine[0], CoordsLine[1], CoordsLine[2], CoordsLine[3]);
-
-//        QPainterPath path1;
-//        path1.addEllipse(boundingRect());
-//        painter->drawPath(path1);
-
-//        painter->setPen(qRgb(0,0,0));
-//        QFont font("Courier", 16, QFont::DemiBold);
-
-//        QFontMetrics fm(font);
-//        int textWidth = fm.width(text);
-
-//        painter->translate(0, 0);
-//        //painter->drawText(-textWidth/2, 0, text);
-
-//    }
-
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *){
             painter->setPen(Qt::black);
-            painter->setBrush(Qt::white);
+            if(Color){
+                if (Color == 1)
+                    painter->setBrush(Qt::green);
+                else
+                    painter->setBrush(Qt::red);
+            }
+            else
+                painter->setBrush(Qt::white);
 
             painter->drawLine(CoordsLine[0], CoordsLine[1], CoordsLine[2], CoordsLine[3]);
 
