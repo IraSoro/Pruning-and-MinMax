@@ -69,12 +69,12 @@ public:
 
         Node *tmp = FindNodeById(root, parentId);
         if(!tmp){
-            qDebug()<<"Return FALSE in AddChilNode";
+            //qDebug()<<"Return FALSE in AddChilNode";
             return false;
         }
 
         if(FindNodeById(tmp, id)){
-            qDebug()<<"Return TRUE in AddChilNode";
+            //qDebug()<<"Return TRUE in AddChilNode";
             return true;
         }
 
@@ -103,7 +103,7 @@ public:
         if(!n->childs.isEmpty()){
             int temp = n->childs.size();
             for(int i=0; i<temp; i++){
-                //qDebug()<<"node - "<<n->id<<" level - "<<n->level<<" child num - "<<n->childs[i]->id<<" count childs "<<n->childs[i]->countChilds<<" fact count childs "<<n->childs[i]->childs.size()<<" data = "<<n->childs[i]->data;
+                //qDebug()<<"node - "<<n->id<<" level - "<<n->level<<" child num - "<<n->childs[i]->id<<" count childs "<<n->childs[i]->countChilds<<" fact count childs "<<n->childs[i]->childs.size()<<" data = "<<n->childs[i]->data<<" clipping = "<<n->clipping;
                 BypassTree(n->childs[i]);
             }
         }
@@ -113,7 +113,7 @@ public:
         Node *tmp = GetRoot();
 
         for (int i = 0 ; i < tmp->childs.size(); i++){
-            //qDebug()<<"node - "<<tmp->id<<" level - "<<tmp->level<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data;
+            //qDebug()<<"node - "<<tmp->id<<" level - "<<tmp->level<<" child num - "<<tmp->childs[i]->id<<" count childs "<<tmp->childs[i]->countChilds<<" fact count childs "<<tmp->childs[i]->childs.size()<<" data = "<<tmp->childs[i]->data<<" clipping = "<<tmp->clipping;
             BypassTree(tmp->childs[i]);
         }
 
@@ -187,16 +187,13 @@ public:
     void GetLeveles(){
         int temp = CountNodesOnLevel.size();
         for (int i = 0; i < temp; i++){
-            qDebug()<<"level ["<<i<<"] = "<<CountNodesOnLevel[i].CountNodes;
+            //qDebug()<<"level ["<<i<<"] = "<<CountNodesOnLevel[i].CountNodes;
             CountNodes += CountNodesOnLevel[i].CountNodes;
         }
-        qDebug()<<"CountNodes = "<<CountNodes;
+        //qDebug()<<"CountNodes = "<<CountNodes;
     }
 
     void DefineDataNodesByMinMaxStart(bool FlagMax){
-        if (root->data >= 0){
-            NullifyInNodeDataStart();
-        }
 
         if (FlagMax){
             DefineDataNodesByMaxStart();
@@ -364,34 +361,18 @@ public:
     }
 
 private:
-    void NullifyInNodeData(Node *n){
-        if(!n->childs.isEmpty()){
-            int temp = n->childs.size();
-            for(int i=0; i<temp; i++){
-                BypassTree(n->childs[i]);
-            }
-        }
-        n->data = -1;
-    }
-
-    void NullifyInNodeDataStart(){
-        Node *tmp = GetRoot();
-        for (int i = 0 ; i < tmp->childs.size(); i++){
-            BypassTree(tmp->childs[i]);
-        }
-        tmp->data = -1;
-    }
-
 
     void DefineDataNodesByMaxStart(){
         Node *tmp = GetRoot();
-        int MaxData = 0;
+        qDebug()<<"n->data root = "<<tmp->data;
+        int MaxData = -1;
         for (int i = 0; i < tmp->countChilds; i++){
-            if (tmp->childs[i]->data < 0 && !tmp->childs[i]->clipping){
+            if (tmp->childs[i]->childs.size() > 0 ){
                 DefineDataNodesByMax(tmp->childs[i]);
             }
-            if (tmp->childs[i]->data > MaxData && !tmp->childs[i]->clipping)
+            if (tmp->childs[i]->data > MaxData && tmp->childs[i]->clipping == 0)
                 MaxData = tmp->childs[i]->data;
+
         }
 
         tmp->data = MaxData;
@@ -403,15 +384,17 @@ private:
         }
     }
     void DefineDataNodesByMax(Node *n){
+
         if (n->countChilds > 0){
-            int MaxData = 0;
+            int MaxData = -1;
             int MinData = 1000;
             bool flag = false;
             if ((n->level)%2 == 0)
                 flag = true;
 
+
             for (int i = 0; i < n->countChilds; i++){
-                if (n->childs[i]->data < 0 && n->childs[i]->clipping == 0){
+                if (n->childs[i]->childs.size() > 0 ){
                     DefineDataNodesByMax(n->childs[i]);
                 }
                 if (n->childs[i]->clipping == 0){
@@ -426,10 +409,14 @@ private:
                     }
                 }
             }
-            if (flag)
-                n->data = MaxData;
-            else
+            if (flag){
+                if (MaxData != -1)
+                    n->data = MaxData;
+            }
+            else{
+                if (MinData != 1000)
                 n->data = MinData;
+            }
 
             for (int j = 0; j < NodesDrawing.size(); j++){
                 if (n->id == NodesDrawing[j].id){
@@ -443,13 +430,15 @@ private:
 
     void DefineDataNodesByMimStart(){
         Node *tmp = GetRoot();
+        qDebug()<<"n->data root = "<<tmp->data;
         int MinData = 1000;
         for (int i = 0; i < tmp->countChilds; i++){
-            if (tmp->childs[i]->data < 0 && !tmp->childs[i]->clipping){
+            if (tmp->childs[i]->childs.size() > 0 ){
                 DefineDataNodesByMin(tmp->childs[i]);
             }
-            if (tmp->childs[i]->data < MinData)
+            if (tmp->childs[i]->data < MinData && tmp->childs[i]->clipping == 0)
                 MinData = tmp->childs[i]->data;
+
         }
 
         tmp->data = MinData;
@@ -463,30 +452,36 @@ private:
 
     void DefineDataNodesByMin(Node *n){
         if (n->countChilds > 0){
-            int MaxData = 0;
+            int MaxData = -1;
             int MinData = 1000;
             bool flag = false;
             if ((n->level)%2 == 0)
                 flag = true;
 
             for (int i = 0; i < n->countChilds; i++){
-                if (n->childs[i]->data < 0 && !n->childs[i]->clipping){
+                if (n->childs[i]->childs.size() > 0){
                     DefineDataNodesByMin(n->childs[i]);
                 }
-                if (flag){
-                    if(MinData > n->childs[i]->data){
-                        MinData = n->childs[i]->data;
-                    }
-                }else{
-                    if(MaxData < n->childs[i]->data){
-                        MaxData = n->childs[i]->data;
+                if (n->childs[i]->clipping == 0){
+                    if (flag){
+                        if(MinData > n->childs[i]->data){
+                            MinData = n->childs[i]->data;
+                        }
+                    }else{
+                        if(MaxData < n->childs[i]->data){
+                            MaxData = n->childs[i]->data;
+                        }
                     }
                 }
             }
-            if (flag)
-                n->data = MinData;
-            else
-                n->data = MaxData;
+            if (flag){
+                if (MinData != 1000)
+                    n->data = MinData;
+            }
+            else{
+                if (MaxData != -1)
+                    n->data = MaxData;
+            }
 
             for (int j = 0; j < NodesDrawing.size(); j++){
                 if (n->id == NodesDrawing[j].id){
@@ -500,12 +495,12 @@ private:
 
     Node* FindNodeById(Node *n, int id){
             if(!n){
-                qDebug()<<"Error in 1_FindNodeById";
+                //qDebug()<<"Error in 1_FindNodeById";
                 return nullptr;
             }
 
             if(n->id == id){
-                qDebug()<<"Return n in FindNodeById";
+                //qDebug()<<"Return n in FindNodeById";
                 return n;
             }
 
@@ -514,7 +509,7 @@ private:
                 for(int i=0; i<temp; i++){
                     Node *foundNode = FindNodeById(n->childs[i], id);
                     if(foundNode){
-                        qDebug()<<"Return foundNode in FindNodeById";
+                        //qDebug()<<"Return foundNode in FindNodeById";
                         return foundNode;
                     }
                 }
