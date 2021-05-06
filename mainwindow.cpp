@@ -122,7 +122,7 @@ void MainWindow::DrawingLinesAndInf(){
     scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
     QGraphicsTextItem *textItem2 = new QGraphicsTextItem();
     textItem2->setPos(xEllipse+30, yEllipse);
-    textItem2->setPlainText("бетта");
+    textItem2->setPlainText("бета");
     scene->addItem(textItem2);
 
     yEllipse += 50;
@@ -138,7 +138,7 @@ void MainWindow::DrawingLinesAndInf(){
     scene->addEllipse(xEllipse, yEllipse, radius, radius, pen, brush);
     QGraphicsTextItem *textItem4 = new QGraphicsTextItem();
     textItem4->setPos(xEllipse+30, yEllipse);
-    textItem4->setPlainText("глуб.бетта");
+    textItem4->setPlainText("глуб.бета");
     scene->addItem(textItem4);
 
 }

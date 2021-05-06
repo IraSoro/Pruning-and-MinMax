@@ -228,7 +228,7 @@ public:
                 for (int i = 0; i < tmp->countChilds-1; i++){
                     for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
                         if (tmp->childs[i]->data > tmp->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(0, flagMAX, tmp->childs[i+1]);
+                            MarkClippingStart(0, flagMAX, tmp->childs[i+1], j+1);
                         }
                     Clipping(0, tmp->childs[i]);
                 }
@@ -240,7 +240,7 @@ public:
                 for (int i = 0; i < tmp->countChilds-1; i++){
                     for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
                         if (tmp->childs[i]->data < tmp->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(0, flagMAX, tmp->childs[i+1]);
+                            MarkClippingStart(0, flagMAX, tmp->childs[i+1], j+1);
                         }
                     Clipping(1, tmp->childs[i]);
                 }
@@ -256,7 +256,7 @@ public:
                 for (int i = 0; i < n->countChilds-1; i++){
                     for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
                         if (n->childs[i]->data > n->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(0, flagMax, n->childs[i+1]);
+                            MarkClippingStart(0, flagMax, n->childs[i+1], j+1);
                         }
                     Clipping(0, n->childs[i]);
                 }
@@ -268,7 +268,7 @@ public:
                 for (int i = 0; i < n->countChilds-1; i++){
                     for (int j = 0; j < n->childs[i+1]->countChilds-1; j++)
                         if (n->childs[i]->data < n->childs[i+1]->childs[j]->data){
-                            MarkClippingStart(0, flagMax, n->childs[i+1]);
+                            MarkClippingStart(0, flagMax, n->childs[i+1], j+1);
                         }
                     Clipping(1, n->childs[i]);
                 }
@@ -284,7 +284,7 @@ public:
                 for (int i = 0; i < tmp->countChilds-1; i++){
                     for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
                         if (tmp->childs[i]->data > tmp->childs[i+1]->childs[0]->childs[0]->childs[j]->data){
-                            MarkClippingStart(1, flagMax,  tmp->childs[i+1]->childs[0]->childs[0]);
+                            MarkClippingStart(1, flagMax,  tmp->childs[i+1]->childs[0]->childs[0], j+1);
                         }
                 }
             }
@@ -294,7 +294,7 @@ public:
                 for (int i = 0; i < tmp->countChilds-1; i++){
                     for (int j = 0; j < tmp->childs[i+1]->countChilds-1; j++)
                         if (tmp->childs[i]->data < tmp->childs[i+1]->childs[0]->childs[0]->childs[j]->data){
-                            MarkClippingStart(1, flagMax, tmp->childs[i+1]->childs[0]->childs[0]);
+                            MarkClippingStart(1, flagMax, tmp->childs[i+1]->childs[0]->childs[0], j+1);
                         }
                 }
             }
@@ -302,7 +302,7 @@ public:
     }
 
 
-    void MarkClippingStart(bool flagDeep, bool flagMax, Node *n){
+    void MarkClippingStart(bool flagDeep, bool flagMax, Node *n, int IndChild){
         int color = 0;
         if (flagDeep){
             if (flagMax)
@@ -317,7 +317,7 @@ public:
                 color = 1;
         }
         if(!n->childs.isEmpty() && n->clipping == 0){
-            for(int i=1; i<n->countChilds; i++){
+            for(int i=IndChild; i<n->countChilds; i++){
                 MarkClipping(flagDeep, flagMax, n->childs[i]);
                 n->childs[i]->clipping = color;
 
